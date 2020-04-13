@@ -13,7 +13,7 @@ void mouse(int button, int state, int x, int y);
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	
     glutInitWindowSize(1600, 900);
     glutInitWindowPosition(160, 60);
@@ -33,10 +33,10 @@ void init(void)
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
 
-    GLfloat mat_specular[] = { 1.0,1.0,1.0,1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    //GLfloat mat_specular[] = { 1.0,1.0,1.0,1.0 };
+    //GLfloat mat_shininess[] = { 50.0 };
+    //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    //glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
     GLfloat light_ambient[] = { 0.1,0.1,0.1,1.0 };  // Интенсивность фонового света
     GLfloat light_diffuse[] = { 0.8,0.8,0.8,1.0 };  // Интенсивность "цвета света"
@@ -46,16 +46,10 @@ void init(void)
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse); // Интенсивность зеркального света
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-    GLfloat light1_ambient[] = { 0.1,0.1,0.1,1.0 };  // Интенсивность фонового света
-    GLfloat light1_diffuse[] = { 0.3,0.3,0.5,1.0 };  // Интенсивность "цвета света"
-    GLfloat light1_position[] = { -10.0,10.0,1.0,1.0 }; // Положение источника света w == 0, источник света считается направленным
-    glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+
+    GLfloat light1_diffuse[] = { 0.0,0.8,0.8,1.0 };
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light1_diffuse); // Интенсивность зеркального света
-    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-
-    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.0);
-    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.05);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -68,18 +62,33 @@ void init(void)
 }
 
 
-GLdouble spin;
+GLint x_spin = 0;
+void light_moving(void)
+{
+    x_spin = (x_spin + 1) % 360;
+    glutPostRedisplay();
+}
+
 void display()
 {
+    GLfloat position[] = { 0.0,0.0,-1.5,1.0 };
+	
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-	
-    glutSolidTorus(0.275, 0.85, 16, 32);
-
-    glFlush();
+    glPushMatrix();
+		glTranslatef(0.0, 0.0, -5.0);
+        glPushMatrix();
+			glRotated(static_cast<GLdouble>(x_spin), 1.0, 0.0, 0.0);
+            glLightfv(GL_LIGHT1, GL_POSITION, position);
+            glTranslated(0.0, 0.0, -1.5);
+            glDisable(GL_LIGHTING);
+            glColor3f(0.0, 1.0, 1.0);
+            glutWireCube(0.1);
+            glEnable(GL_LIGHTING);
+        glPopMatrix();
+        glutSolidTorus(0.275, 0.85, 16, 32);
+    glPopMatrix();
+    glutSwapBuffers();
 }
 
 void reshape(const int w, const int h)
@@ -116,5 +125,13 @@ void keyboard_special(const int key, int x, int y)
 
 void mouse(int button, int state, int x, int y)
 {
-	
+    switch (button)
+    {
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_DOWN)
+            glutIdleFunc(light_moving);
+        else
+            glutIdleFunc(NULL);
+        break;
+    }
 }
