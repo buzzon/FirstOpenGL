@@ -247,7 +247,5 @@ void b_engine::draw_marking()
 		glEnd();
 	}
 
-
-
 	glEnable(GL_LIGHTING);
 }

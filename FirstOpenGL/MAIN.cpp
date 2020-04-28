@@ -71,7 +71,7 @@ void init()
 	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	GLfloat ambient[] = { 0.5, 0.5, 0.5, 1.0 }; // »нтенсивность фонового освещени€
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -351,12 +351,194 @@ void draw_muzzle()
 	glPopMatrix();
 }
 
+void draw_part_track()
+{
+	glPushMatrix();
+	glTranslatef(0, 0, -0.18);
+	
+	GLfloat base[12][3] =
+	{
+		//крышка
+		{-0.43, 0.03, -0.1},	// 0
+		{-0.43, 0.03, 0.07},	// 1
+		{-0.35, 0.03, 0.1},	// 2
+		{0.35, 0.03, 0.1},	// 3
+		{0.43, 0.03, 0.07},	// 4
+		{0.43, 0.03, -0.1},	// 5
+
+		//крышка
+		{-0.43, -0.03, -0.1},	// 0
+		{-0.43, -0.03, 0.07},	// 1
+		{-0.35, -0.03, 0.1},	// 2
+		{0.35, -0.03, 0.1},	// 3
+		{0.43, -0.03, 0.07},	// 4
+		{0.43, -0.03, -0.1},	// 5
+	};
+
+	GLint base_triangles[20][3] =
+	{
+		{0,1,2},
+		{0,2,3},
+		{0,3,4},
+		{0,4,5},
+
+		{6,8,7},
+		{6,9,8},
+		{6,10,9},
+		{6,11,10},
+
+		// стенка
+		{0,6,1},
+		{6,7,1},
+
+		{1,7,2},
+		{7,8,2},
+
+		{2,8,3},
+		{8,9,3},
+
+		{3,9,4},
+		{9,10,4},
+
+		{4,10,5},
+		{10,11,5},
+
+		{5,11,0},
+		{11,6,0},
+	};
+
+	GLfloat bracing[8][3] =
+	{
+		//крышка
+		{-0.05, 0.025, -0.1},	// 0
+		{-0.05, 0.025, 0.1},	// 1
+		{0.05, 0.025, 0.1},	// 2
+		{0.05, 0.025, -0.1},	// 3
+
+		//дно
+		{-0.05, -0.025, -0.13},	// 0
+		{-0.05, -0.025, 0.13},	// 1
+		{0.05, -0.025, 0.13},	// 2
+		{0.05, -0.025, -0.13}	// 3
+	};
+
+	GLint bracing_triangles[][3] =
+	{
+		{0,1,2},
+		{0,2,3},
+		
+		{4,6,5},
+		{4,7,6},
+
+		//стенка
+		{0,4,1},
+		{4,5,1},
+		{1,5,2},
+		{5,6,2},
+		{2,6,3},
+		{6,7,3},
+		{3,7,4},
+		{0,3,4},
+	};
+	
+
+	for (auto& triangle : base_triangles)
+		b_engine::draw_triangle(&base[triangle[0]][0], &base[triangle[1]][0], &base[triangle[2]][0]);
+
+	glPushMatrix();
+
+	glTranslatef(0.0, 0, 0.1);
+
+	for (auto& triangle : bracing_triangles)
+		b_engine::draw_triangle(&bracing[triangle[0]][0], &bracing[triangle[1]][0], &bracing[triangle[2]][0]);
+
+	glTranslatef(0.3, 0, 0);
+	
+	for (auto& triangle : bracing_triangles)
+		b_engine::draw_triangle(&bracing[triangle[0]][0], &bracing[triangle[1]][0], &bracing[triangle[2]][0]);
+
+	glTranslatef(-0.6, 0, 0);
+
+	for (auto& triangle : bracing_triangles)
+		b_engine::draw_triangle(&bracing[triangle[0]][0], &bracing[triangle[1]][0], &bracing[triangle[2]][0]);
+
+	glTranslatef(0.15, 0, -0.2);
+
+	for (auto& triangle : bracing_triangles)
+		b_engine::draw_triangle(&bracing[triangle[0]][0], &bracing[triangle[1]][0], &bracing[triangle[2]][0]);
+
+	glTranslatef(0.3, 0, 0);
+
+	for (auto& triangle : bracing_triangles)
+		b_engine::draw_triangle(&bracing[triangle[0]][0], &bracing[triangle[1]][0], &bracing[triangle[2]][0]);
+
+	glTranslatef(-0.15, 0, -0.09);
+	glRotatef(90, 0, 0, 1);
+	b_engine::draw_cylinder(5, 0.02, 0.02, 0.6);
+	
+	glPopMatrix();
+	glPopMatrix();
+}
+
+void draw_tracks()
+{
+	glPushMatrix();
+	// передн€€ часть гусеницы
+	for (int i  = 0; i < 5; i++)
+	{
+		draw_part_track();
+		glTranslatef(0, 0, -0.35);
+		glRotatef(-36, 1, 0, 0);
+	}
+
+	// низ гусеницы
+	for (int i = 0; i < 18; i++)
+	{
+		draw_part_track();
+		glTranslatef(0, 0, -0.35);
+	}
+
+	// задн€€ часть гусеницы
+	for (int i = 0; i < 5; i++)
+	{
+		draw_part_track();
+		glTranslatef(0, 0, -0.35);
+		glRotatef(-36, 1, 0, 0);
+	}
+
+	// верх гусеницы
+	for (int i = 0; i < 18; i++)
+	{
+		draw_part_track();
+		glTranslatef(0, 0, -0.35);
+	}
+
+	//  олЄса
+	glTranslatef(0, -0.5, 0);
+	glRotatef(90, 0, 0, 1);
+	for (int i = 0; i < 5; ++i)
+	{
+		b_engine::draw_cylinder(16, 0.6, 0.6, 0.5);
+		glTranslatef(0, 0, 1.5);
+	}
+
+
+	glPopMatrix();
+}
+
 void draw_panzer()
 {
-	glTranslatef(0, 1, 0);
+	glTranslatef(0, 1.6, 0);
 	draw_turret();
 	draw_base();
 	draw_muzzle();
+
+	glPushMatrix();
+		glTranslatef(1.75, -0.5, -3);
+		draw_tracks();
+		glTranslatef(-3.5, 0, 0);
+		draw_tracks();
+	glPopMatrix();
 }
 
 void display()
