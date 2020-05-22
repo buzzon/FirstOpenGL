@@ -8,7 +8,7 @@
 
 const int width = 1024;
 const int height = 768;
-const int fov = 45;
+const int fov = 3.14 / 2.;
 
 GLubyte framebuffer[height][width][3];
 GLuint texName;
@@ -44,12 +44,13 @@ Vec3f cast_ray(const Vec3f& orig, const Vec3f& dir, const Sphere& sphere) {
 
 void ray_traicing(const Sphere& sphere)
 {
+#pragma omp parallel for
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			float x = (2 * (i + 0.5) / (float)width - 1) * tan(fov / 2.) * width / (float)height;
-			float y = -(2 * (j + 0.5) / (float)height - 1) * tan(fov / 2.);
+			float x = (2 * (j + 0.5) / (float)width - 1) * tan(fov / 2.) * width / (float)height;
+			float y = -(2 * (i + 0.5) / (float)height - 1) * tan(fov / 2.);
 			Vec3f dir = Vec3f(x, y, -1).normalize();
 
 			auto cast = cast_ray(Vec3f(0, 0, 0), dir, sphere);
