@@ -5,6 +5,7 @@
 #include <xlocale>
 
 void init();
+void gradient();
 void moving();
 void display();
 void reshape(int w, int h);
@@ -518,7 +519,7 @@ void draw_tracks()
 	glRotatef(90, 0, 0, 1);
 	for (int i = 0; i < 5; ++i)
 	{
-		b_engine::draw_cylinder(16, 0.6, 0.6, 0.5);
+		b_engine::draw_cylinder(16, 0.3, 0.3, 0.5);
 		glTranslatef(0, 0, 1.5);
 	}
 
@@ -534,7 +535,7 @@ void draw_panzer()
 	draw_muzzle();
 
 	glPushMatrix();
-		glTranslatef(1.75, -0.5, -3);
+		glTranslatef(1.75, -0.3, -3);
 		draw_tracks();
 		glTranslatef(-3.5, 0, 0);
 		draw_tracks();
