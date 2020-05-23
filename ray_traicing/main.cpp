@@ -7,8 +7,8 @@
 #include <vector>
 #include <algorithm>
 
-const int width = 1024;
-const int height = 768;
+const int width = 800;
+const int height = 600;
 const int fov = 45;
 
 GLubyte framebuffer[height][width][3];
@@ -140,7 +140,6 @@ Vec3f cast_ray(	const Vec3f& orig, const Vec3f& dir,
 
 void ray_traicing(const std::vector<Sphere>& spheres, const std::vector<Light>& lights)
 {
-	#pragma omp parallel for
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -160,9 +159,9 @@ void ray_traicing(const std::vector<Sphere>& spheres, const std::vector<Light>& 
 
 void renderScene()
 {
-	Material      ivory(1.0, Vec4f(0.6, 0.3, 0.1, 0.0), Vec3f(0.4, 0.4, 0.3), 50.);
-	Material      glass(1.5, Vec4f(0.0, 0.5, 0.1, 0.8), Vec3f(0.6, 0.7, 0.8), 125.);
-	Material red_rubber(1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.3, 0.1, 0.1), 10.);
+	Material      ivory(1.0, Vec4f(0.6, 0.3, 0.1, 0.0),  Vec3f(0.4, 0.4, 0.3), 50.);
+	Material      glass(1.5, Vec4f(0.0, 0.5, 0.1, 0.8),  Vec3f(0.6, 0.7, 0.8), 125.);
+	Material red_rubber(1.0, Vec4f(0.9, 0.1, 0.0, 0.0),  Vec3f(0.3, 0.1, 0.1), 10.);
 	Material     mirror(1.0, Vec4f(0.0, 10.0, 0.8, 0.0), Vec3f(1.0, 1.0, 1.0), 1425.);
 
 	std::vector<Sphere> spheres;
