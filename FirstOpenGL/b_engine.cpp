@@ -53,6 +53,12 @@ void b_engine::draw_triangle_sim_x(float* v1, float* v2, float* v3)
 	glPopMatrix();
 }
 
+void b_engine::draw_object(GLint triangles[][3], int triangles_count, GLfloat vertexs[][3])
+{
+	for (int i = 0; i < triangles_count; i++)
+		b_engine::draw_triangle(&vertexs[triangles[i][0]][0], &vertexs[triangles[i][1]][0], &vertexs[triangles[i][2]][0]);
+}
+
 void b_engine::normalize(float out[3])
 {
 	const auto d = std::sqrt(out[0] * out[0] + out[1] * out[1] + out[2] * out[2]);

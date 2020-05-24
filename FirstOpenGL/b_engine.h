@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
-#include <stdio.h>
+#include <xlocale>
+#include <stdlib.h>
+#include <windows.h> 
 #include <GL/glut.h>
 
 #define PI 3.14159265 
@@ -12,6 +14,8 @@ public:
 	static void draw_triangle(float* v1, float* v2, float* v3);
 	// рисует два полигона с нормалями симметрично по x оси
 	static void draw_triangle_sim_x(float* v1, float* v2, float* v3);
+	// рисует объект
+	static void draw_object(GLint  triangles[][3], int triangles_count, GLfloat  vertexs[][3]);
 
 	// нормалицвзия вектора
 	static void normalize(float v[3]);
