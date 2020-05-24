@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <xlocale>
 
-void init();
+void init(); // инициализация GL
 void moving();// выполняется когда не нужна отрисовка, пересчитывает положение наблюдателя
 void display(); // выполняется при необходимости в отрисовке
 void reshape(int w, int h); // выполняется при изменении размеров окна
