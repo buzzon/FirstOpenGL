@@ -135,12 +135,14 @@
   <ItemGroup>
     <ClCompile Include="b_engine.cpp" />
     <ClCompile Include="MAIN.cpp" />
+    <ClCompile Include="paint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="b_engine.h" />
+    <ClInclude Include="paint.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

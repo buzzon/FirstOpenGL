@@ -5,12 +5,11 @@
 #include <xlocale>
 
 void init();
-void gradient();
-void moving();
-void display();
-void reshape(int w, int h);
-void keyboard_special(int key, int x, int y);
-void keyboard_special_up(int key, int x, int y);
+void moving(); // выполняется когда не нужна отрисовка, пересчитывает положение наблюдателя
+void display(); // выполняется при необходимости в отрисовке
+void reshape(int w, int h); // выполняется при изменении размеров окна
+void keyboard_special(int key, int x, int y); // выполняется при нажатии спец клавиш
+void keyboard_special_up(int key, int x, int y); // выполняется при отпускании спец клавиш
 
 //camera
 GLfloat camera_rotation[2] = { 30.0, 145.0 };
@@ -21,8 +20,8 @@ GLfloat camera_distance = -8;
 GLfloat distance = 0;
 GLfloat distance_value = 0.05;
 
-GLfloat light_diffuse[] = { 1.0, 0.96, 0.83, 1.0 };
-GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 }; // Положение источника света w == 0, источник света считается направленным
+GLfloat light_diffuse[] = { 1.0, 0.96, 0.83, 1.0 }; // Цвет источника света
+GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 }; // Положение источника света, если w == 0 то источник света считается направленным
 
 int main(int argc, char** argv)
 {
@@ -72,7 +71,7 @@ void init()
 	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	GLfloat ambient[] = { 0.5, 0.5, 0.5, 1.0 }; // Интенсивность фонового освещения
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -190,7 +189,6 @@ void draw_turret()
 		glTranslatef(0.3, 0.7, 0);
 		b_engine::draw_cylinder(16, 0.2, 0.3, 0.2);
 	glPopMatrix();
-
 
 	// ракетница 1
 	glPushMatrix();
@@ -323,7 +321,7 @@ void draw_base()
 	glPushMatrix();
 		glTranslatef(0, 0, 2);
 		draw_hatch();
-		glTranslatef(1, 00.1, -4.2);
+		glTranslatef(1, 0.1, -4.2);
 		glRotatef(-6, 1, 0, 0);
 		draw_hatch();
 	glPopMatrix();
@@ -520,6 +518,7 @@ void draw_tracks()
 	for (int i = 0; i < 5; ++i)
 	{
 		b_engine::draw_cylinder(16, 0.3, 0.3, 0.5);
+		b_engine::draw_cylinder(16, 0.6, 0.6, 0.4);
 		glTranslatef(0, 0, 1.5);
 	}
 
@@ -550,6 +549,7 @@ void display()
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	if (camera_distance > 0) glRotatef(180, 0.0, 1.0, 0.0);
+
 	glTranslatef(0.0, 0.0, camera_distance);
 	glRotatef(camera_rotation[0], 1.0, 0.0, 0.0);
 	glRotatef(camera_rotation[1], 0.0, 1.0, 0.0);

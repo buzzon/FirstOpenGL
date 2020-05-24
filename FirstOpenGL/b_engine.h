@@ -8,17 +8,32 @@
 class b_engine
 {
 public:
+	// рисует простейший полигон с нормалью 
 	static void draw_triangle(float* v1, float* v2, float* v3);
-	static void draw_triangle2(float* v1, float* v2, float* v3);
+	// рисует два полигона с нормал€ми симметрично по x оси
 	static void draw_triangle_sim_x(float* v1, float* v2, float* v3);
-	static void draw_triangle_subdivide(float* v1, float* v2, float* v3, int depth);
+
+	// нормалицвзи€ вектора
 	static void normalize(float v[3]);
-	static void normcrossprod(const float v1[3], const float v2[3], float out[3]); 	// вычисл€ет нормализованное векторное произведение двух векторов
-	static void get_vectors(GLfloat foot[][3], GLfloat d1[3], GLfloat d2[3]); // вычисл€ет 2 вектора лежащих на плоскости
+	// вычисл€ет нормализованное векторное произведение двух векторов
+	static void normcrossprod(const float v1[3], const float v2[3], float out[3]); 	
 
-	static void draw_icosahedron(int subdivide);
+	/// <summary>
+	/// –исует цилиндр
+	/// </summary>
+	/// <param name="vertices"> ол-во точек в основании цилиндра</param>
+	/// <param name="radius_up">радиус верхнего основани€</param>
+	/// <param name="radius_down">радиус нижнего основани€</param>
+	/// <param name="depth">высота</param>
 	static void draw_cylinder(int vertices, float radius_up, float radius_down, float depth);
-	static void draw_light_source(GLenum light, GLfloat pos[4], GLfloat color[3]);
-	static void draw_marking();
-};
 
+	// –исует базовую разметку невоспреимчивую к свету
+	static void draw_marking();
+	// –исует стержень в центре мира с цветным обозначением направлений осей
+	static void draw_pivot();
+	/// <summary>
+	/// –исует горизонтальную сетку в нулевых координатах
+	/// </summary>
+	/// <param name="count_lines">количество линий по оси</param>
+	static void draw_grid(int count_lines);
+};
