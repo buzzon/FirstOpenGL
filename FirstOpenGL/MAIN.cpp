@@ -4,14 +4,14 @@
 #include <stdio.h>
 #include <xlocale>
 
-void init(int argc, char** argv);						// инициализация GL
-void moving();											// выполняется когда не нужна отрисовка, пересчитывает положение наблюдателя
-void display();											// выполняется при необходимости в отрисовке
-void reshape(int w, int h);								// выполняется при изменении размеров окна
-void keyboard_special(int key, int x, int y);			// выполняется при нажатии спец клавиш
-void keyboard_special_up(int key, int x, int y);		// выполняется при отпускании спец клавиш
+void init(int argc, char** argv);						// РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ GL
+void moving();											// РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РєРѕРіРґР° РЅРµ РЅСѓР¶РЅР° РѕС‚СЂРёСЃРѕРІРєР°, РїРµСЂРµСЃС‡РёС‚С‹РІР°РµС‚ РїРѕР»РѕР¶РµРЅРёРµ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
+void display();											// РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РІ РѕС‚СЂРёСЃРѕРІРєРµ
+void reshape(int w, int h);								// РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРё РёР·РјРµРЅРµРЅРёРё СЂР°Р·РјРµСЂРѕРІ РѕРєРЅР°
+void keyboard_special(int key, int x, int y);			// РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРё РЅР°Р¶Р°С‚РёРё СЃРїРµС† РєР»Р°РІРёС€
+void keyboard_special_up(int key, int x, int y);		// РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РїСЂРё РѕС‚РїСѓСЃРєР°РЅРёРё СЃРїРµС† РєР»Р°РІРёС€
 
-// Позиция и вращения наблюдателя
+// РџРѕР·РёС†РёСЏ Рё РІСЂР°С‰РµРЅРёСЏ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
 GLfloat camera_rotation[2] = { 30.0, 145.0 };
 GLfloat speed_rotation[2] = { 0.0, 0.0 };
 GLfloat speed_rotation_value = 2;
@@ -20,37 +20,37 @@ GLfloat camera_distance = -8;
 GLfloat speed_distance = 0;
 GLfloat speed_distance_value = 0.05;
 
-// Свет (цвет и позиция)
-GLfloat light_diffuse[] = { 1.0, 0.96, 0.83, 1.0 };		// Цвет источника света
-GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 };		// Положение источника света, если w == 0 то источник света считается направленным
+// РЎРІРµС‚ (С†РІРµС‚ Рё РїРѕР·РёС†РёСЏ)
+GLfloat light_diffuse[] = { 1.0, 0.96, 0.83, 1.0 };		// Р¦РІРµС‚ РёСЃС‚РѕС‡РЅРёРєР° СЃРІРµС‚Р°
+GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 };		// РџРѕР»РѕР¶РµРЅРёРµ РёСЃС‚РѕС‡РЅРёРєР° СЃРІРµС‚Р°, РµСЃР»Рё w == 0 С‚Рѕ РёСЃС‚РѕС‡РЅРёРє СЃРІРµС‚Р° СЃС‡РёС‚Р°РµС‚СЃСЏ РЅР°РїСЂР°РІР»РµРЅРЅС‹Рј
 
 int main(int argc, char** argv)
 {
-	init(argc, argv);										// Инициализация GL
-	glutIdleFunc(moving);									// Устанавливаю функцию отрабатывающую когда все действия выполненны (вращает камеру)
-	glutDisplayFunc(display);								// Устанавливаю функцию отрабатывающую когда нужно отрисовать картинку
-	glutReshapeFunc(reshape);								// Устанавливаю функцию отрабатывающую когда изменился размер экрана
-	glutSpecialFunc(keyboard_special);						// Устанавливаю функцию отрабатывающую когда нажата спец клавиша
-	glutSpecialUpFunc(keyboard_special_up);					// Устанавливаю функцию отрабатывающую когда отпущена спец клавиша
-	glutMainLoop();											// Запускаю главный игровой цикл
+	init(argc, argv);										// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ GL
+	glutIdleFunc(moving);									// РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ С„СѓРЅРєС†РёСЋ РѕС‚СЂР°Р±Р°С‚С‹РІР°СЋС‰СѓСЋ РєРѕРіРґР° РІСЃРµ РґРµР№СЃС‚РІРёСЏ РІС‹РїРѕР»РЅРµРЅРЅС‹ (РІСЂР°С‰Р°РµС‚ РєР°РјРµСЂСѓ)
+	glutDisplayFunc(display);								// РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ С„СѓРЅРєС†РёСЋ РѕС‚СЂР°Р±Р°С‚С‹РІР°СЋС‰СѓСЋ РєРѕРіРґР° РЅСѓР¶РЅРѕ РѕС‚СЂРёСЃРѕРІР°С‚СЊ РєР°СЂС‚РёРЅРєСѓ
+	glutReshapeFunc(reshape);								// РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ С„СѓРЅРєС†РёСЋ РѕС‚СЂР°Р±Р°С‚С‹РІР°СЋС‰СѓСЋ РєРѕРіРґР° РёР·РјРµРЅРёР»СЃСЏ СЂР°Р·РјРµСЂ СЌРєСЂР°РЅР°
+	glutSpecialFunc(keyboard_special);						// РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ С„СѓРЅРєС†РёСЋ РѕС‚СЂР°Р±Р°С‚С‹РІР°СЋС‰СѓСЋ РєРѕРіРґР° РЅР°Р¶Р°С‚Р° СЃРїРµС† РєР»Р°РІРёС€Р°
+	glutSpecialUpFunc(keyboard_special_up);					// РЈСЃС‚Р°РЅР°РІР»РёРІР°СЋ С„СѓРЅРєС†РёСЋ РѕС‚СЂР°Р±Р°С‚С‹РІР°СЋС‰СѓСЋ РєРѕРіРґР° РѕС‚РїСѓС‰РµРЅР° СЃРїРµС† РєР»Р°РІРёС€Р°
+	glutMainLoop();											// Р—Р°РїСѓСЃРєР°СЋ РіР»Р°РІРЅС‹Р№ РёРіСЂРѕРІРѕР№ С†РёРєР»
 	return 0;
 }
 
 void moving()
 {
-	camera_rotation[0] = camera_rotation[0] + speed_rotation[0];	// Задаю необходимый поворот вертикально
-	camera_rotation[1] = camera_rotation[1] + speed_rotation[1];	// Задаю необходимый поворот горизонтально
-	camera_distance = camera_distance + speed_distance;				// Задаю дистанцию камеры от нулевых координат
+	camera_rotation[0] = camera_rotation[0] + speed_rotation[0];	// Р—Р°РґР°СЋ РЅРµРѕР±С…РѕРґРёРјС‹Р№ РїРѕРІРѕСЂРѕС‚ РІРµСЂС‚РёРєР°Р»СЊРЅРѕ
+	camera_rotation[1] = camera_rotation[1] + speed_rotation[1];	// Р—Р°РґР°СЋ РЅРµРѕР±С…РѕРґРёРјС‹Р№ РїРѕРІРѕСЂРѕС‚ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ
+	camera_distance = camera_distance + speed_distance;				// Р—Р°РґР°СЋ РґРёСЃС‚Р°РЅС†РёСЋ РєР°РјРµСЂС‹ РѕС‚ РЅСѓР»РµРІС‹С… РєРѕРѕСЂРґРёРЅР°С‚
 
-	glutPostRedisplay();											// Перерисовываю кадр
+	glutPostRedisplay();											// РџРµСЂРµСЂРёСЃРѕРІС‹РІР°СЋ РєР°РґСЂ
 }
 
 void init(int argc, char** argv)
 {
-	glutInit(&argc, argv);												   // Инициализация GL utility tools
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);			   // Говорю что используется двойная буферизация кадра,
-																		   // 1 пиксель 3 байта красный(0-255) зелёный(0-255) синий(0-255)
-																		   // включаю тест глубины
+	glutInit(&argc, argv);												   // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ GL utility tools
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);			   // Р“РѕРІРѕСЂСЋ С‡С‚Рѕ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґРІРѕР№РЅР°СЏ Р±СѓС„РµСЂРёР·Р°С†РёСЏ РєР°РґСЂР°,
+																		   // 1 РїРёРєСЃРµР»СЊ 3 Р±Р°Р№С‚Р° РєСЂР°СЃРЅС‹Р№(0-255) Р·РµР»С‘РЅС‹Р№(0-255) СЃРёРЅРёР№(0-255)
+																		   // РІРєР»СЋС‡Р°СЋ С‚РµСЃС‚ РіР»СѓР±РёРЅС‹
 
 	glutInitWindowSize(1600, 900);										   //
 	glutInitWindowPosition(160, 60);									   //
@@ -61,42 +61,42 @@ void init(int argc, char** argv)
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);					   //
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);					   //
 
-	glEnable(GL_LIGHTING);												   // Вклучаю освещение
-	glEnable(GL_LIGHT0);												   // Включаю нулевой источник света
-	glEnable(GL_DEPTH_TEST);											   // Включаю тест глубины
-	glEnable(GL_CULL_FACE);												   // Включаю отвечение граней
+	glEnable(GL_LIGHTING);												   // Р’РєР»СѓС‡Р°СЋ РѕСЃРІРµС‰РµРЅРёРµ
+	glEnable(GL_LIGHT0);												   // Р’РєР»СЋС‡Р°СЋ РЅСѓР»РµРІРѕР№ РёСЃС‚РѕС‡РЅРёРє СЃРІРµС‚Р°
+	glEnable(GL_DEPTH_TEST);											   // Р’РєР»СЋС‡Р°СЋ С‚РµСЃС‚ РіР»СѓР±РёРЅС‹
+	glEnable(GL_CULL_FACE);												   // Р’РєР»СЋС‡Р°СЋ РѕС‚РІРµС‡РµРЅРёРµ РіСЂР°РЅРµР№
 
-	GLfloat ambient[] = { 0.5, 0.5, 0.5, 1.0 };							   // Интенсивность фонового освещения
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);					   // Задаю цвет фонового освещения
+	GLfloat ambient[] = { 0.5, 0.5, 0.5, 1.0 };							   // РРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ С„РѕРЅРѕРІРѕРіРѕ РѕСЃРІРµС‰РµРЅРёСЏ
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);					   // Р—Р°РґР°СЋ С†РІРµС‚ С„РѕРЅРѕРІРѕРіРѕ РѕСЃРІРµС‰РµРЅРёСЏ
 }
 
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Чистю буффер света и глубины
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Р§РёСЃС‚СЋ Р±СѓС„С„РµСЂ СЃРІРµС‚Р° Рё РіР»СѓР±РёРЅС‹
 
 	glPushMatrix();
-		glLightfv(GL_LIGHT0, GL_POSITION, light_position); // Ставлю свет на своё законное
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position); // РЎС‚Р°РІР»СЋ СЃРІРµС‚ РЅР° СЃРІРѕС‘ Р·Р°РєРѕРЅРЅРѕРµ
 
-		if (camera_distance > 0) glRotatef(180, 0.0, 1.0, 0.0);	   // Размещаю наблюдателя
-		glTranslatef(0.0, 0.0, camera_distance);				   // Размещаю наблюдателя
-		glRotatef(camera_rotation[0], 1.0, 0.0, 0.0);			   // Размещаю наблюдателя
-		glRotatef(camera_rotation[1], 0.0, 1.0, 0.0);			   // Размещаю наблюдателя
+		if (camera_distance > 0) glRotatef(180, 0.0, 1.0, 0.0);	   // Р Р°Р·РјРµС‰Р°СЋ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
+		glTranslatef(0.0, 0.0, camera_distance);				   // Р Р°Р·РјРµС‰Р°СЋ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
+		glRotatef(camera_rotation[0], 1.0, 0.0, 0.0);			   // Р Р°Р·РјРµС‰Р°СЋ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
+		glRotatef(camera_rotation[1], 0.0, 1.0, 0.0);			   // Р Р°Р·РјРµС‰Р°СЋ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ
 
-		b_engine::draw_marking();								   // Рисую мировую сетку и центр координат
-		paint::draw_panzer();									   // И танк, кудаже без него
+		b_engine::draw_marking();								   // Р РёСЃСѓСЋ РјРёСЂРѕРІСѓСЋ СЃРµС‚РєСѓ Рё С†РµРЅС‚СЂ РєРѕРѕСЂРґРёРЅР°С‚
+		paint::draw_panzer();									   // Р С‚Р°РЅРє, РєСѓРґР°Р¶Рµ Р±РµР· РЅРµРіРѕ
 
 		glPopMatrix();
-	glutSwapBuffers(); // Меняю буыеры местами, показываю новоиспеченный кадр
+	glutSwapBuffers(); // РњРµРЅСЏСЋ Р±СѓС‹РµСЂС‹ РјРµСЃС‚Р°РјРё, РїРѕРєР°Р·С‹РІР°СЋ РЅРѕРІРѕРёСЃРїРµС‡РµРЅРЅС‹Р№ РєР°РґСЂ
 }
 
 void reshape(const int w, const int h)
 {
-	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));						 // Задаю новый размер видимой области
-	glMatrixMode(GL_PROJECTION);															 // Выбираю матрицу проекции
-	glLoadIdentity();																		 // Загружаю единичную матрицу
-	gluPerspective(65.0, static_cast<GLfloat>(w) / static_cast<GLfloat>(h), 0.001, 50.0);	 // Настройка перспективы просмотра (угол обзара, ширина, высота, ближнее отсечение, дальнее отсечение)
-	glMatrixMode(GL_MODELVIEW);																 // Загружаю модельную матрицу
-	glLoadIdentity();																		 // Востанавливаю её к единичному виду
+	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));						 // Р—Р°РґР°СЋ РЅРѕРІС‹Р№ СЂР°Р·РјРµСЂ РІРёРґРёРјРѕР№ РѕР±Р»Р°СЃС‚Рё
+	glMatrixMode(GL_PROJECTION);															 // Р’С‹Р±РёСЂР°СЋ РјР°С‚СЂРёС†Сѓ РїСЂРѕРµРєС†РёРё
+	glLoadIdentity();																		 // Р—Р°РіСЂСѓР¶Р°СЋ РµРґРёРЅРёС‡РЅСѓСЋ РјР°С‚СЂРёС†Сѓ
+	gluPerspective(65.0, static_cast<GLfloat>(w) / static_cast<GLfloat>(h), 0.001, 50.0);	 // РќР°СЃС‚СЂРѕР№РєР° РїРµСЂСЃРїРµРєС‚РёРІС‹ РїСЂРѕСЃРјРѕС‚СЂР° (СѓРіРѕР» РѕР±Р·Р°СЂР°, С€РёСЂРёРЅР°, РІС‹СЃРѕС‚Р°, Р±Р»РёР¶РЅРµРµ РѕС‚СЃРµС‡РµРЅРёРµ, РґР°Р»СЊРЅРµРµ РѕС‚СЃРµС‡РµРЅРёРµ)
+	glMatrixMode(GL_MODELVIEW);																 // Р—Р°РіСЂСѓР¶Р°СЋ РјРѕРґРµР»СЊРЅСѓСЋ РјР°С‚СЂРёС†Сѓ
+	glLoadIdentity();																		 // Р’РѕСЃС‚Р°РЅР°РІР»РёРІР°СЋ РµС‘ Рє РµРґРёРЅРёС‡РЅРѕРјСѓ РІРёРґСѓ
 }
 
 void keyboard_special(const int key, int x, int y)
@@ -104,18 +104,18 @@ void keyboard_special(const int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		speed_rotation[0] = speed_rotation_value;   break;			// задаю скорость вращения вертикальнро
+		speed_rotation[0] = speed_rotation_value;   break;			// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ РІРµСЂС‚РёРєР°Р»СЊРЅСЂРѕ
 	case GLUT_KEY_DOWN:
-		speed_rotation[0] = -speed_rotation_value;  break;			// задаю скорость вращения вертикальнро
+		speed_rotation[0] = -speed_rotation_value;  break;			// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ РІРµСЂС‚РёРєР°Р»СЊРЅСЂРѕ
 	case GLUT_KEY_LEFT:
-		speed_rotation[1] = speed_rotation_value;   break;			// задаю скорость вращения горизонтально
+		speed_rotation[1] = speed_rotation_value;   break;			// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ
 	case GLUT_KEY_RIGHT:
-		speed_rotation[1] = -speed_rotation_value;  break;			// задаю скорость вращения горизонтально
+		speed_rotation[1] = -speed_rotation_value;  break;			// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕ
 
 	case GLUT_KEY_PAGE_UP:
-		speed_distance = speed_distance_value;  break;				// задаю скорость приближения камеры
+		speed_distance = speed_distance_value;  break;				// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РїСЂРёР±Р»РёР¶РµРЅРёСЏ РєР°РјРµСЂС‹
 	case GLUT_KEY_PAGE_DOWN:										
-		speed_distance = -speed_distance_value; break;				// задаю скорость отдаления камеры
+		speed_distance = -speed_distance_value; break;				// Р·Р°РґР°СЋ СЃРєРѕСЂРѕСЃС‚СЊ РѕС‚РґР°Р»РµРЅРёСЏ РєР°РјРµСЂС‹
 
 	default:
 		printf("unassigned button" + key);
@@ -124,7 +124,7 @@ void keyboard_special(const int key, int x, int y)
 
 void keyboard_special_up(const int key, int x, int y)
 {
-	// при отпускании ставлю скорости перемещения на 0
+	// РїСЂРё РѕС‚РїСѓСЃРєР°РЅРёРё СЃС‚Р°РІР»СЋ СЃРєРѕСЂРѕСЃС‚Рё РїРµСЂРµРјРµС‰РµРЅРёСЏ РЅР° 0
 	switch (key)
 	{
 	case GLUT_KEY_UP:
