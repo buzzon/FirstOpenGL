@@ -21,6 +21,8 @@ public:
 	static void normalize(float v[3]);
 	// вычисляет нормализованное векторное произведение двух векторов
 	static void normcrossprod(const float v1[3], const float v2[3], float out[3]); 	
+	// вычисляет нормаль полигона
+	static void get_normal(float* v1, float* v2, float* v3, float out[3]);
 
 	/// <summary>
 	/// Рисует цилиндр

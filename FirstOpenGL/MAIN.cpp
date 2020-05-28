@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <xlocale>
 
-void init(); // инициализация GL
+void init(int argc, char** argv); // инициализация GL
 void moving();// выполняется когда не нужна отрисовка, пересчитывает положение наблюдателя
 void display(); // выполняется при необходимости в отрисовке
 void reshape(int w, int h); // выполняется при изменении размеров окна
@@ -25,13 +25,7 @@ GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 }; // Положение источника света,
 
 int main(int argc, char** argv)
 {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-
-	glutInitWindowSize(1600, 900);
-	glutInitWindowPosition(160, 60);
-	glutCreateWindow("panzer");
-	init();
+	init(argc, argv);
 	glutIdleFunc(moving);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
@@ -50,27 +44,24 @@ void moving()
 	glutPostRedisplay();
 }
 
-void init()
+void init(int argc, char** argv)
 {
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+
+	glutInitWindowSize(1600, 900);
+	glutInitWindowPosition(160, 60);
+	glutCreateWindow("panzer");
+
 
 	glClearColor(0.2, 0.2, 0.2, 0.0);
-	glShadeModel(GL_SMOOTH);
 
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_diffuse);
 
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 2.0);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 1.0);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.5);
-
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
-
 	glEnable(GL_CULL_FACE);
 
 	GLfloat ambient[] = { 0.5, 0.5, 0.5, 1.0 }; // Интенсивность фонового освещения

@@ -1,8 +1,8 @@
 #include "b_engine.h"
 
-void b_engine::draw_triangle(float* v1, float* v2, float* v3)
+void b_engine::get_normal(float* v1, float* v2, float* v3, float out[3])
 {
-	GLfloat d1[3], d2[3], norm[3];
+	GLfloat d1[3], d2[3];
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -10,7 +10,13 @@ void b_engine::draw_triangle(float* v1, float* v2, float* v3)
 		d2[i] = v2[i] - v3[i];
 	}
 
-	normcrossprod(d1, d2, norm);
+	normcrossprod(d1, d2, out);
+}
+
+void b_engine::draw_triangle(float* v1, float* v2, float* v3)
+{
+	GLfloat norm[3];
+	get_normal(v1, v2, v3, norm);
 
 	glBegin(GL_TRIANGLES);
 		glNormal3fv(norm);
@@ -22,15 +28,8 @@ void b_engine::draw_triangle(float* v1, float* v2, float* v3)
 
 void b_engine::draw_triangle_sim_x(float* v1, float* v2, float* v3)
 {
-	GLfloat d1[3], d2[3], norm[3];
-
-	for (int i = 0; i < 3; ++i)
-	{
-		d1[i] = v1[i] - v2[i];
-		d2[i] = v2[i] - v3[i];
-	}
-
-	normcrossprod(d1, d2, norm);
+	GLfloat norm[3];
+	get_normal(v1, v2, v3, norm);
 
 	glPushMatrix();
 	
