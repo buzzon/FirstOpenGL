@@ -18,3 +18,8 @@ bool sphere::intersect(const vec3f& origin, const vec3f norm_direction, float& l
     if (length < 0) return false;
     return true;
 }
+
+material sphere::get_material() const
+{
+    return material;
+}

@@ -147,6 +147,8 @@
   <ItemGroup>
     <ClInclude Include="engine.h" />
     <ClInclude Include="geometry.h" />
+    <ClInclude Include="IObject3d.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="sphere.h" />
   </ItemGroup>
