@@ -23,3 +23,8 @@ material sphere::get_material() const
 {
     return material;
 }
+
+vec3f sphere::get_normal(vec3f hit) const
+{
+    return (hit - position).normalize();
+}
