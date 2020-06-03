@@ -44,7 +44,7 @@ void engine::generateTexture()
 vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const std::vector<IObject3d*> &composition, const std::vector<light>& lights)
 {
 	vec3f point, normal;
-	material material;
+	Material material;
 
 	// цвет
 	if (!scene_intersect(origin, norm_direction, composition, point, normal, material)) {
@@ -57,15 +57,26 @@ vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const st
 
 	for (size_t i = 0; i < lights.size(); i++) {
 		vec3f light_dir = (lights[i].position - point).normalize();
+		float light_distance = (lights[i].position - point).norm();
 
-		diffuse_light_intensity += lights[i].intensity * std::max(0.f, light_dir * normal); // освещение дифузное
-		specular_light_intensity += powf(std::max(0.f, reflect(light_dir, normal) * norm_direction), material.specular_exponent) * lights[i].intensity;// блики
+		// Тени
+		vec3f shadow_orig = light_dir * normal < 0 ? point - normal * 1e-3 : point + normal * 1e-3; // смещаем точку начала теки с объекта, иначе пересечение будет всегда
+		vec3f shadow_pt, shadow_N;
+		Material tmpmaterial;
+		// убеждаемся, не пересекает ли луч точка-источник света объекты нашей сцены иначе начинает просчёт освещения для этого источника света
+		if (scene_intersect(shadow_orig, light_dir, composition, shadow_pt, shadow_N, tmpmaterial) && (shadow_pt - shadow_orig).norm() < light_distance)
+			continue;
+
+		// освещение дифузное
+		diffuse_light_intensity += lights[i].intensity * std::max(0.f, light_dir * normal);
+		// блики
+		specular_light_intensity += powf(std::max(0.f, reflect(light_dir, normal) * norm_direction), material.specular_exponent) * lights[i].intensity;
 	}
 
 	return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + vec3f(1, 1, 1) * specular_light_intensity * material.albedo[1];
 }
 
-bool engine::scene_intersect(const vec3f& origin, const vec3f& norm_direction, const std::vector<IObject3d*>& composition, vec3f& hit, vec3f& N, material& material)
+bool engine::scene_intersect(const vec3f& origin, const vec3f& norm_direction, const std::vector<IObject3d*>& composition, vec3f& hit, vec3f& N, Material& material)
 {
 	float spheres_dist = std::numeric_limits<float>::max();
 
@@ -91,8 +102,8 @@ vec3f engine::reflect(const vec3f& dir, const vec3f& normal)
 
 void engine::build_and_render(GLubyte(&framebuffer)[height][width][3])
 {
-	material      ivory(vec2f(0.6, 0.3), vec3f(0.4, 0.4, 0.3), 50.);
-	material red_rubber(vec2f(0.9, 0.1), vec3f(0.3, 0.1, 0.1), 10.);
+	Material      ivory(vec2f(0.6, 0.3), vec3f(0.4, 0.4, 0.3), 50.);
+	Material red_rubber(vec2f(0.9, 0.1), vec3f(0.3, 0.1, 0.1), 10.);
 
 	std::vector<IObject3d*> composition;
 	composition.push_back(&sphere(vec3f(-3,    0,   -16), 2, ivory));	
