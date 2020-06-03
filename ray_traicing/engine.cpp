@@ -43,19 +43,26 @@ void engine::generateTexture()
 
 vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const std::vector<IObject3d*> &composition, const std::vector<light>& lights)
 {
-	vec3f point, N;
+	vec3f point, normal;
 	material material;
 
-	if (!scene_intersect(origin, norm_direction, composition, point, N, material)) {
+	// цвет
+	if (!scene_intersect(origin, norm_direction, composition, point, normal, material)) {
 		return vec3f(0.2, 0.2, 0.2); //get_background_color();
 	}
 
+	
 	float diffuse_light_intensity = 0;
+	float specular_light_intensity = 0;
+
 	for (size_t i = 0; i < lights.size(); i++) {
 		vec3f light_dir = (lights[i].position - point).normalize();
-		diffuse_light_intensity += lights[i].intensity * std::max(0.f, light_dir * N);
+
+		diffuse_light_intensity += lights[i].intensity * std::max(0.f, light_dir * normal); // освещение дифузное
+		specular_light_intensity += powf(std::max(0.f, reflect(light_dir, normal) * norm_direction), material.specular_exponent) * lights[i].intensity;// блики
 	}
-	return material.diffuse_color * diffuse_light_intensity;
+
+	return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + vec3f(1, 1, 1) * specular_light_intensity * material.albedo[1];
 }
 
 bool engine::scene_intersect(const vec3f& origin, const vec3f& norm_direction, const std::vector<IObject3d*>& composition, vec3f& hit, vec3f& N, material& material)
@@ -77,10 +84,15 @@ bool engine::scene_intersect(const vec3f& origin, const vec3f& norm_direction, c
 	return spheres_dist < 1000;
 }
 
+vec3f engine::reflect(const vec3f& dir, const vec3f& normal)
+{
+	return dir - normal * 2.f * (dir * normal);
+}
+
 void engine::build_and_render(GLubyte(&framebuffer)[height][width][3])
 {
-	material      ivory(vec3f(0.4, 0.4, 0.3));
-	material red_rubber(vec3f(0.3, 0.1, 0.1));
+	material      ivory(vec2f(0.6, 0.3), vec3f(0.4, 0.4, 0.3), 50.);
+	material red_rubber(vec2f(0.9, 0.1), vec3f(0.3, 0.1, 0.1), 10.);
 
 	std::vector<IObject3d*> composition;
 	composition.push_back(&sphere(vec3f(-3,    0,   -16), 2, ivory));	
@@ -88,8 +100,11 @@ void engine::build_and_render(GLubyte(&framebuffer)[height][width][3])
 	composition.push_back(&sphere(vec3f( 1.5, -0.5, -18), 3, red_rubber));
 	composition.push_back(&sphere(vec3f(7,	   5,   -18), 4, ivory));
 
+
 	std::vector<light> lights;
 	lights.push_back(light(vec3f(-20, 20, 20), 1.5));
+	lights.push_back(light(vec3f(30, 50, -25), 1.8));
+	lights.push_back(light(vec3f(30, 20, 30),  1.7));
 
 	render(composition, lights, framebuffer);
 }
@@ -106,6 +121,8 @@ void engine::render(const std::vector<IObject3d*>& composition, const std::vecto
 			vec3f dir = vec3f(x, y, -1).normalize();
 
 			vec3f color = cast_ray(vec3f(0, 0, 0), dir, composition, lights);
+			float max = std::max(color[0], std::max(color[1], color[2]));
+			if (max > 1) color = color * (1. / max);	// выравниваем освещение
 
 			framebuffer[i][j][0] = color[0] * 255;
 			framebuffer[i][j][1] = color[1] * 255;
