@@ -7,6 +7,7 @@
 
 #define height 600
 #define width 800
+#define recursion_depth 4
 
 class engine
 {
@@ -18,7 +19,7 @@ private:
 	static void render(const std::vector<IObject3d*>& composition, const std::vector<light>& lights, GLubyte(&framebuffer)[600][800][3]);
 	static void generateTexture();										   // Генерация текстуры
 
-	static vec3f cast_ray(const vec3f &origin, const vec3f norm_direction, const std::vector<IObject3d*>& composition, const std::vector<light>& lights);
+	static vec3f cast_ray(const vec3f &origin, const vec3f norm_direction, const std::vector<IObject3d*>& composition, const std::vector<light>& lights, size_t depth = 0);
 	static bool scene_intersect(const vec3f& orig, const vec3f& dir, const std::vector<IObject3d*>& composition, vec3f& hit, vec3f& N, Material& material);
 	static vec3f reflect(const vec3f& dir, const vec3f& normal);
 };

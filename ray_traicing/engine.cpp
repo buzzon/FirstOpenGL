@@ -41,15 +41,20 @@ void engine::generateTexture()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, framebuffer);  //
 }
 
-vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const std::vector<IObject3d*> &composition, const std::vector<light>& lights)
+vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const std::vector<IObject3d*> &composition, const std::vector<light>& lights, size_t depth)
 {
 	vec3f point, normal;
 	Material material;
 
 	// цвет
-	if (!scene_intersect(origin, norm_direction, composition, point, normal, material)) {
+	if (depth > recursion_depth || !scene_intersect(origin, norm_direction, composition, point, normal, material)) {
 		return vec3f(0.2, 0.2, 0.2); //get_background_color();
 	}
+
+	// отражения
+	vec3f reflect_dir = reflect(norm_direction, normal);
+	vec3f reflect_orig = reflect_dir * normal < 0 ? point - normal * 1e-3 : point + normal * 1e-3;
+	vec3f reflect_color = cast_ray(reflect_orig, reflect_dir, composition, lights, depth + 1);
 
 	
 	float diffuse_light_intensity = 0;
@@ -73,7 +78,7 @@ vec3f engine::cast_ray(const vec3f& origin, const vec3f norm_direction, const st
 		specular_light_intensity += powf(std::max(0.f, reflect(light_dir, normal) * norm_direction), material.specular_exponent) * lights[i].intensity;
 	}
 
-	return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + vec3f(1, 1, 1) * specular_light_intensity * material.albedo[1];
+	return material.diffuse_color * diffuse_light_intensity * material.albedo[0] + vec3f(1, 1, 1) * specular_light_intensity * material.albedo[1] + reflect_color * material.albedo[2];
 }
 
 bool engine::scene_intersect(const vec3f& origin, const vec3f& norm_direction, const std::vector<IObject3d*>& composition, vec3f& hit, vec3f& N, Material& material)
@@ -102,14 +107,16 @@ vec3f engine::reflect(const vec3f& dir, const vec3f& normal)
 
 void engine::build_and_render(GLubyte(&framebuffer)[height][width][3])
 {
-	Material      ivory(vec2f(0.6, 0.3), vec3f(0.4, 0.4, 0.3), 50.);
-	Material red_rubber(vec2f(0.9, 0.1), vec3f(0.3, 0.1, 0.1), 10.);
+	Material      ivory(vec3f(0.5, 1.0, 0.0), vec3f(0.48, 0.02, 0.66), 50.);
+	Material red_rubber(vec3f(0.9, 0.1, 0.0), vec3f(0.02, 0.10, 0.44), 10.);
+	Material     orange(vec3f(0.9, 0.5, 0.0), vec3f(0.99, 0.70, 0.00), 50.);
+	Material     mirror(vec3f(0.0, 10.0, 0.8), vec3f(1.0, 1.00, 1.00), 1425.);
 
 	std::vector<IObject3d*> composition;
-	composition.push_back(&sphere(vec3f(-3,    0,   -16), 2, ivory));	
-	composition.push_back(&sphere(vec3f(-1.0, -1.5, -12), 2, red_rubber));
+	composition.push_back(&sphere(vec3f(-3,    0,   -16), 2,      ivory));
+	composition.push_back(&sphere(vec3f(-1.0, -1.5, -12), 2,     orange));
 	composition.push_back(&sphere(vec3f( 1.5, -0.5, -18), 3, red_rubber));
-	composition.push_back(&sphere(vec3f(7,	   5,   -18), 4, ivory));
+	composition.push_back(&sphere(vec3f( 7,    5,   -18), 4,     mirror));
 
 
 	std::vector<light> lights;
